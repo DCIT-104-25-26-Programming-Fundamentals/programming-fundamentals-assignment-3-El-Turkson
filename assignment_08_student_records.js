@@ -85,3 +85,162 @@
 // =============================================================================
 
 
+const readlineSync = require('readline-sync');
+
+let students = [];
+
+function displayMenu() {
+    console.log('\n================================');
+    console.log('   STUDENT RECORD SYSTEM MENU');
+    console.log('================================');
+    console.log('1. Add student');
+    console.log('2. Display all students');
+    console.log('3. Calculate average score');
+    console.log('4. Quit');
+}
+
+function addStudent() {
+    const name = readlineSync.question('Student name: ');
+    if (name.trim() === '') {
+        console.log('Error: Name cannot be empty.');
+        return;
+    }
+    
+    const idInput = readlineSync.question('Student ID: ');
+    const id = Number(idInput);
+    if (!Number.isInteger(id) || id <= 0) {
+        console.log('Error: Please enter a valid positive integer ID.');
+        return;
+    }
+    
+    // Check for duplicate ID
+    for (let i = 0; i < students.length; i++) {
+        if (students[i].id === id) {
+            console.log(`Error: Student with ID ${id} already exists.`);
+            return;
+        }
+    }
+    
+    const numScoresInput = readlineSync.question('How many scores? ');
+    const numScores = Number(numScoresInput);
+    if (!Number.isInteger(numScores) || numScores <= 0) {
+        console.log('Error: Please enter a valid positive number of scores.');
+        return;
+    }
+    
+    const scores = [];
+    for (let i = 0; i < numScores; i++) {
+        const scoreInput = readlineSync.question(`Enter score ${i + 1}: `);
+        const score = Number(scoreInput);
+        if (isNaN(score) || score < 0 || score > 100) {
+            console.log('Error: Score must be a number between 0 and 100.');
+            return;
+        }
+        scores.push(score);
+    }
+    
+    const student = {
+        name: name,
+        id: id,
+        scores: scores
+    };
+    
+    students.push(student);
+    console.log(`Student "${name}" added successfully.`);
+}
+
+function calculateAverage(scores) {
+    if (scores.length === 0) return 0;
+    let sum = 0;
+    for (let i = 0; i < scores.length; i++) {
+        sum += scores[i];
+    }
+    return sum / scores.length;
+}
+
+function displayAllStudents() {
+    if (students.length === 0) {
+        console.log('No students have been added yet.');
+        return;
+    }
+    
+    console.log('\nStudent Records:');
+    console.log('-------------------------------------------------------------------');
+    console.log('Name'.padEnd(20) + 'ID'.padEnd(12) + 'Scores'.padEnd(20) + 'Average');
+    console.log('-------------------------------------------------------------------');
+    
+    for (let i = 0; i < students.length; i++) {
+        const student = students[i];
+        const scoresStr = student.scores.join(', ');
+        const avg = calculateAverage(student.scores);
+        console.log(
+            student.name.padEnd(20) + 
+            student.id.toString().padEnd(12) + 
+            scoresStr.padEnd(20) + 
+            avg.toFixed(2)
+        );
+    }
+    console.log('-------------------------------------------------------------------');
+}
+
+function calculateStudentAverage() {
+    if (students.length === 0) {
+        console.log('No students have been added yet.');
+        return;
+    }
+    
+    const idInput = readlineSync.question('Enter student ID: ');
+    const id = Number(idInput);
+    
+    if (!Number.isInteger(id) || id <= 0) {
+        console.log('Error: Please enter a valid positive integer ID.');
+        return;
+    }
+    
+    let foundStudent = null;
+    for (let i = 0; i < students.length; i++) {
+        if (students[i].id === id) {
+            foundStudent = students[i];
+            break;
+        }
+    }
+    
+    if (foundStudent === null) {
+        console.log(`Error: Student with ID ${id} not found.`);
+        return;
+    }
+    
+    const avg = calculateAverage(foundStudent.scores);
+    console.log(`${foundStudent.name}'s average score: ${avg.toFixed(2)}`);
+}
+
+function main() {
+    let running = true;
+    
+    while (running) {
+        displayMenu();
+        const choice = readlineSync.question('Enter your choice (1-4): ');
+        
+        switch (choice) {
+            case '1':
+                addStudent();
+                break;
+            case '2':
+                displayAllStudents();
+                break;
+            case '3':
+                calculateStudentAverage();
+                break;
+            case '4':
+                console.log('Goodbye!');
+                running = false;
+                break;
+            default:
+                console.log('Error: Invalid choice. Please enter a number between 1 and 4.');
+        }
+    }
+}
+
+main();
+
+

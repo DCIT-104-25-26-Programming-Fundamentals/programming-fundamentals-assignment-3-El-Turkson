@@ -68,5 +68,114 @@
 // YOUR CODE BELOW — remove the // symbols from the scaffold and fill it in
 // =============================================================================
 
+
 const readlineSync = require('readline-sync');
 
+function readMatrix(rows, cols, name) {
+    const matrix = [];
+    console.log(`\nEnter ${name} matrix:`);
+    for (let i = 0; i < rows; i++) {
+        const rowInput = readlineSync.question(`Enter row ${i + 1}: `);
+        const row = rowInput.trim().split(' ').map(Number);
+        while (row.length !== cols) {
+            console.log(`Error: Please enter exactly ${cols} numbers.`);
+            const newInput = readlineSync.question(`Enter row ${i + 1}: `);
+            row = newInput.trim().split(' ').map(Number);
+        }
+        matrix.push(row);
+    }
+    return matrix;
+}
+
+function printMatrix(matrix, name) {
+    console.log(`\n${name}:`);
+    for (let i = 0; i < matrix.length; i++) {
+        let rowStr = '';
+        for (let j = 0; j < matrix[i].length; j++) {
+            rowStr += matrix[i][j].toString().padStart(5);
+        }
+        console.log(rowStr);
+    }
+}
+
+function transposeMatrix(matrix) {
+    const rows = matrix.length;
+    const cols = matrix[0].length;
+    const transposed = [];
+    for (let j = 0; j < cols; j++) {
+        transposed[j] = [];
+        for (let i = 0; i < rows; i++) {
+            transposed[j][i] = matrix[i][j];
+        }
+    }
+    return transposed;
+}
+
+function addMatrices(matrixA, matrixB) {
+    const rows = matrixA.length;
+    const cols = matrixA[0].length;
+    const result = [];
+    for (let i = 0; i < rows; i++) {
+        result[i] = [];
+        for (let j = 0; j < cols; j++) {
+            result[i][j] = matrixA[i][j] + matrixB[i][j];
+        }
+    }
+    return result;
+}
+
+function multiplyMatrices(matrixA, matrixB) {
+    const rowsA = matrixA.length;
+    const colsA = matrixA[0].length;
+    const colsB = matrixB[0].length;
+    const result = [];
+    for (let i = 0; i < rowsA; i++) {
+        result[i] = [];
+        for (let j = 0; j < colsB; j++) {
+            let sum = 0;
+            for (let k = 0; k < colsA; k++) {
+                sum += matrixA[i][k] * matrixB[k][j];
+            }
+            result[i][j] = sum;
+        }
+    }
+    return result;
+}
+
+function main() {
+    console.log('=== PART A: Transpose Matrix ===');
+    const rowsA = parseInt(readlineSync.question('Enter number of rows: '));
+    const colsA = parseInt(readlineSync.question('Enter number of columns: '));
+    const matrixA = readMatrix(rowsA, colsA, '');
+    printMatrix(matrixA, 'Original Matrix');
+    const transposed = transposeMatrix(matrixA);
+    printMatrix(transposed, 'Transposed Matrix');
+
+    console.log('\n=== PART B: Add Two Matrices ===');
+    const rowsB = parseInt(readlineSync.question('Enter number of rows: '));
+    const colsB = parseInt(readlineSync.question('Enter number of columns: '));
+    const matrixB = readMatrix(rowsB, colsB, 'first');
+    const matrixC = readMatrix(rowsB, colsB, 'second');
+    printMatrix(matrixB, 'First Matrix');
+    printMatrix(matrixC, 'Second Matrix');
+    const sumMatrix = addMatrices(matrixB, matrixC);
+    printMatrix(sumMatrix, 'Sum Matrix');
+
+    console.log('\n=== PART C: Multiply Two Matrices ===');
+    const rowsM = parseInt(readlineSync.question('Enter rows for matrix A: '));
+    const colsM = parseInt(readlineSync.question('Enter columns for matrix A: '));
+    const rowsN = parseInt(readlineSync.question('Enter rows for matrix B: '));
+    const colsN = parseInt(readlineSync.question('Enter columns for matrix B: '));
+    if (colsM !== rowsN) {
+        console.log('Error: Number of columns in A must equal number of rows in B');
+        return;
+    }
+    const matrixM = readMatrix(rowsM, colsM, 'first');
+    const matrixN = readMatrix(rowsN, colsN, 'second');
+    printMatrix(matrixM, 'Matrix A');
+    printMatrix(matrixN, 'Matrix B');
+    const productMatrix = multiplyMatrices(matrixM, matrixN);
+    printMatrix(productMatrix, 'Product Matrix');
+}
+
+main();

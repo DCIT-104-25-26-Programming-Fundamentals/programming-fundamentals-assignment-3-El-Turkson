@@ -60,3 +60,48 @@
 // =============================================================================
 
 
+
+const readlineSync = require('readline-sync');
+
+function printSingleTable(num) {
+    console.log(`\nMultiplication Table for ${num}:`);
+    for (let i = 1; i <= 12; i++) {
+        const result = num * i;
+        console.log(`${num}  x  ${i.toString().padStart(2)}  =  ${result.toString().padStart(3)}`);
+    }
+}
+
+function printTablesUpToN(n) {
+    for (let num = 1; num <= n; num++) {
+        printSingleTable(num);
+        if (num < n) {
+            console.log('---------------------------');
+        }
+    }
+}
+
+function main() {
+    console.log('=== PART A: Single Multiplication Table ===');
+    const numInput = readlineSync.question('Enter a number: ');
+    const num = Number(numInput);
+    
+    if (isNaN(num)) {
+        console.log('Error: Please enter a valid number.');
+        return;
+    }
+    
+    printSingleTable(num);
+    
+    console.log('\n=== PART B: Multiplication Tables 1 to N ===');
+    const nInput = readlineSync.question('Enter a number N: ');
+    const n = Number(nInput);
+    
+    if (!Number.isInteger(n) || n <= 0) {
+        console.log('Error: N must be a positive integer.');
+        return;
+    }
+    
+    printTablesUpToN(n);
+}
+
+main();

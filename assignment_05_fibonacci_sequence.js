@@ -55,3 +55,77 @@
 // =============================================================================
 
 
+
+
+
+const readlineSync = require('readline-sync');
+
+function printFibonacci(n) {
+    if (n <= 0) {
+        console.log('Error: N must be a positive integer.');
+        return;
+    }
+    
+    let sequence = [];
+    let a = 0;
+    let b = 1;
+    
+    for (let i = 0; i < n; i++) {
+        if (i === 0) {
+            sequence.push(a);
+        } else if (i === 1) {
+            sequence.push(b);
+        } else {
+            let next = a + b;
+            sequence.push(next);
+            a = b;
+            b = next;
+        }
+    }
+    
+    console.log(`Fibonacci sequence: ${sequence.join(' ')}`);
+}
+
+function isFibonacci(num) {
+    if (num < 0) return false;
+    if (num === 0 || num === 1) return true;
+    
+    let a = 0;
+    let b = 1;
+    let next = a + b;
+    
+    while (next <= num) {
+        if (next === num) {
+            return true;
+        }
+        a = b;
+        b = next;
+        next = a + b;
+    }
+    
+    return false;
+}
+
+function main() {
+    console.log('=== PART A: Print Fibonacci Sequence ===');
+    const nInput = readlineSync.question('How many terms? ');
+    const n = Number(nInput);
+    
+    if (!Number.isInteger(n) || n <= 0) {
+        console.log('Error: N must be a positive integer.');
+    } else {
+        printFibonacci(n);
+    }
+    
+    console.log('\n=== PART B: Check Fibonacci Number ===');
+    const numInput = readlineSync.question('Enter a number to check: ');
+    const num = Number(numInput);
+    
+    if (isFibonacci(num)) {
+        console.log(`${num} is a Fibonacci number.`);
+    } else {
+        console.log(`${num} is NOT a Fibonacci number.`);
+    }
+}
+
+main();
